@@ -1,18 +1,15 @@
 package me.tialla.restapi.events;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Builder @AllArgsConstructor @NoArgsConstructor
-@Getter @Setter @EqualsAndHashCode(of = "id") //@EqualsAndHashCode(of = {"id", "account"}) 여러개 표현방법
-@Entity
-public class Event {
-
-    @Id
-    @GeneratedValue
-    private Integer id;
+//입력값을 받는 Event Dto분리
+@Data @Builder @NoArgsConstructor @AllArgsConstructor
+public class EventDto {
 
     private String name;
     private String description;
@@ -24,10 +21,5 @@ public class Event {
     private int basePrice; // (optional)
     private int maxPrice; // (optional)
     private int limitOfEnrollment;
-
-    private boolean offline;
-    private boolean free;
-    @Enumerated(EnumType.STRING)
-    private EventStatus eventStatus = EventStatus.DRAFT;
-
+    
 }
