@@ -43,9 +43,6 @@ public class EventControllerTests {
     @Autowired
     ObjectMapper objectMapper;
 
-//    @MockBean
-//    EventRepository eventRepository;
-
     @Test
     public void createEvent() throws Exception{
 
@@ -66,8 +63,6 @@ public class EventControllerTests {
                 .free(true)
                 .offline(false)
                 .build();
-        //Mockito.when(eventRepository.save(event)).thenReturn(event);
-        //Mockito.when(eventRepository.save(any(Event.class))).thenReturn(event);
 
         mockMvc.perform(post("/api/events/")
                     .contentType(MediaType.APPLICATION_JSON)
