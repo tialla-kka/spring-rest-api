@@ -43,8 +43,8 @@ public class EventControllerTests {
                 .description("Rest API Development with Spring")
                 .beginEnrollmentDateTime(LocalDateTime.of(2020,12,7,15,6))
                 .closeEnrollmentDateTime(LocalDateTime.of(2020,12,8,11,6))
-                .beginEventDateTime(LocalDateTime.of(2020,12,7,15,1))
-                .endEventDateTime(LocalDateTime.of(2020,12,7,15,1))
+                .beginEventDateTime(LocalDateTime.of(2020,12,7,15,6))
+                .endEventDateTime(LocalDateTime.of(2020,12,8,16,6))
                 .basePrice(100)
                 .maxPrice(200)
                 .limitOfEnrollment(100)
@@ -60,8 +60,8 @@ public class EventControllerTests {
                 .andExpect(jsonPath("id").exists())
                 .andExpect(header().exists(HttpHeaders.LOCATION))
                 .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE))
-                .andExpect(jsonPath("id").value(Matchers.not(100)))
-                .andExpect(jsonPath("free").value(Matchers.not(true)))
+                .andExpect(jsonPath("free").value(false))
+                .andExpect(jsonPath("offline").value(true))
                 .andExpect(jsonPath("eventStatus").value(EventStatus.DRAFT.name()))
 
         ;
