@@ -1,11 +1,13 @@
 package me.tialla.restapi.events;
 
+import org.aspectj.weaver.GeneratedReferenceTypeDelegate;
 import org.hibernate.mapping.Array;
 import org.modelmapper.ModelMapper;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.Arrays;
@@ -54,11 +57,12 @@ public class EventController {
 
         WebMvcLinkBuilder selfLinkBuilder = linkTo(EventController.class);
         URI createdUri = selfLinkBuilder.toUri();
+
         List<Link> links = Arrays.asList(
                 selfLinkBuilder.slash(newEvent.getId()).withSelfRel(),
                 selfLinkBuilder.withRel("query-events"),
-                selfLinkBuilder.slash(newEvent.getId()).withRel("update-event")
-
+                selfLinkBuilder.slash(newEvent.getId()).withRel("update-event"),
+                Link.of("/docs/index.html#resources-events-create").withRel("profile")
         );
         EntityModel eventResource = EntityModel.of(newEvent, links);
 
