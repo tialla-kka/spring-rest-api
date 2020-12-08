@@ -1,7 +1,11 @@
 package me.tialla.restapi.events;
 
+import org.hibernate.mapping.Array;
 import org.modelmapper.ModelMapper;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
@@ -11,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
@@ -45,7 +51,17 @@ public class EventController {
         Event event = modelMapper.map(eventDto, Event.class); //eventDto에 있는것을 Event.class타입의 인스턴스로 맵핑
         event.update();
         Event newEvent = this.eventRepository.save(event);
-        URI createdUri = linkTo(EventController.class).slash(newEvent.getId()).toUri();
-        return ResponseEntity.created(createdUri).body(event);
+
+        WebMvcLinkBuilder selfLinkBuilder = linkTo(EventController.class);
+        URI createdUri = selfLinkBuilder.toUri();
+        List<Link> links = Arrays.asList(
+                selfLinkBuilder.slash(newEvent.getId()).withSelfRel(),
+                selfLinkBuilder.withRel("query-events"),
+                selfLinkBuilder.slash(newEvent.getId()).withRel("update-event")
+
+        );
+        EntityModel eventResource = EntityModel.of(newEvent, links);
+
+        return ResponseEntity.created(createdUri).body(eventResource);
     }
 }
