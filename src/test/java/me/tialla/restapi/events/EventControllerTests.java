@@ -1,4 +1,4 @@
-package me.tialla.restapi;
+package me.tialla.restapi.events;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.tialla.restapi.common.RestDocsConfiguration;
@@ -184,10 +184,10 @@ public class EventControllerTests {
         EventDto eventDto = EventDto.builder()
                 .name("Spring")
                 .description("Rest API Development with Spring")
-                .beginEnrollmentDateTime(LocalDateTime.of(2020,12,10,15,6))
+                .beginEnrollmentDateTime(LocalDateTime.of(2020,12,7,15,6))
                 .closeEnrollmentDateTime(LocalDateTime.of(2020,12,8,11,6))
-                .beginEventDateTime(LocalDateTime.of(2020,12,7,15,1))
-                .endEventDateTime(LocalDateTime.of(2020,12,7,16,1))
+                .beginEventDateTime(LocalDateTime.of(2020,12,7,15,6))
+                .endEventDateTime(LocalDateTime.of(2020,12,8,16,6))
                 .basePrice(10000)
                 .maxPrice(200)
                 .limitOfEnrollment(100)
@@ -202,6 +202,7 @@ public class EventControllerTests {
                 .andExpect(jsonPath("$[0].objectName").exists())
                 .andExpect(jsonPath("$[0].defaultMessage").exists())
                 .andExpect(jsonPath("$[0].code").exists())
+                .andExpect(jsonPath("_links.index").exists())
 
         ;
     }
