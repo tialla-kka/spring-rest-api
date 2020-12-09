@@ -11,23 +11,25 @@ import java.io.IOException;
 @JsonComponent
 public class ErrorsSerializer extends JsonSerializer<Errors> {
     @Override
-    public void serialize(Errors errors, JsonGenerator gen, SerializerProvider serializerProvider) throws IOException {
-        gen.writeStartArray();
+    public void serialize(Errors errors, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+        jsonGenerator.writeFieldName("errors");
+        jsonGenerator.writeStartArray();
+
         errors.getFieldErrors().forEach(e->{
 
             try {
-                gen.writeStartObject();
-                gen.writeStringField("field", e.getField());
-                gen.writeStringField("objectName", e.getObjectName());
-                gen.writeStringField("code", e.getCode());
-                gen.writeStringField("defaultMessage", e.getDefaultMessage());
+                jsonGenerator.writeStartObject();
+                jsonGenerator.writeStringField("field", e.getField());
+                jsonGenerator.writeStringField("objectName", e.getObjectName());
+                jsonGenerator.writeStringField("code", e.getCode());
+                jsonGenerator.writeStringField("defaultMessage", e.getDefaultMessage());
 
                 Object rejectedValue = e.getRejectedValue();
                 if(rejectedValue != null){
-                    gen.writeStringField("rejectedValue", rejectedValue.toString());
+                    jsonGenerator.writeStringField("rejectedValue", rejectedValue.toString());
                 }
 
-                gen.writeEndObject();
+                jsonGenerator.writeEndObject();
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
@@ -36,16 +38,16 @@ public class ErrorsSerializer extends JsonSerializer<Errors> {
         errors.getGlobalErrors().forEach(e->{
 
             try {
-                gen.writeStartObject();
-                gen.writeStringField("objectName", e.getObjectName());
-                gen.writeStringField("code", e.getCode());
-                gen.writeStringField("defaultMessage", e.getDefaultMessage());
-                gen.writeEndObject();
+                jsonGenerator.writeStartObject();
+                jsonGenerator.writeStringField("objectName", e.getObjectName());
+                jsonGenerator.writeStringField("code", e.getCode());
+                jsonGenerator.writeStringField("defaultMessage", e.getDefaultMessage());
+                jsonGenerator.writeEndObject();
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
 
         });
-        gen.writeEndArray();
+        jsonGenerator.writeEndArray();
     }
 }
