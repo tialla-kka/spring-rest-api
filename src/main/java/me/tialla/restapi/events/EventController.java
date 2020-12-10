@@ -2,13 +2,18 @@ package me.tialla.restapi.events;
 
 import me.tialla.restapi.common.ErrorsResource;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -65,8 +70,20 @@ public class EventController {
         EntityModel eventResource = EventResource.modelof(newEvent);
         eventResource.add(selfLinkBuilder.withRel("query-events"));
         eventResource.add(selfLinkBuilder.slash(newEvent.getId()).withRel("update-event"));
+
         eventResource.add(Link.of("/docs/index.html#resources-events-create").withRel("profile"));
+
         return ResponseEntity.created(createdUri).body(eventResource);
+    }
+
+    @GetMapping
+    public ResponseEntity queryEvents(Pageable pageable, PagedResourcesAssembler<Event> assembler){
+        Page<Event> page = this.eventRepository.findAll(pageable);
+        var pageResource = assembler.toModel(page, EventResource::modelof);
+
+        pageResource.add(Link.of("/docs/index.html#resources-events-list").withRel("profile"));
+
+        return ResponseEntity.ok(pageResource);
     }
 
 
