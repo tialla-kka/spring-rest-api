@@ -126,7 +126,6 @@ public class EventController {
         return ResponseEntity.ok(eventResource);
     }
 
-
     private ResponseEntity badRequest(Errors errors) {
         return ResponseEntity.badRequest().body(ErrorsResource.modelOf(errors));
         //return ResponseEntity.badRequest().body(errors);
