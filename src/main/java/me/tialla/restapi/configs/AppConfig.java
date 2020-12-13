@@ -1,8 +1,10 @@
 package me.tialla.restapi.configs;
 
 import me.tialla.restapi.accounts.Account;
+import me.tialla.restapi.accounts.AccountRepository;
 import me.tialla.restapi.accounts.AccountRole;
 import me.tialla.restapi.accounts.AccountService;
+import me.tialla.restapi.common.AppProperties;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -11,6 +13,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.server.i18n.AcceptHeaderLocaleContextResolver;
 
 import java.util.Set;
 
@@ -35,15 +38,25 @@ public class AppConfig {
             @Autowired
             AccountService accountService;
 
+            @Autowired
+            AppProperties appProperties;
+
             @Override
             public void run(ApplicationArguments args) throws Exception {
-                Account tialla = Account.builder()
-                        .email("tialla@email.com")
-                        .password("tialla")
-                        .roles(Set.of(AccountRole.ADMIN, AccountRole.USER))
-                        .build();
 
-                //accountService.saveAccount(tialla);
+                Account admin = Account.builder()
+                        .email(appProperties.getAdminUsername())
+                        .password(appProperties.getAdminPassword())
+                        .roles(Set.of(AccountRole.ADMIN))
+                        .build();
+                accountService.saveAccount(admin);
+
+                Account user = Account.builder()
+                        .email(appProperties.getUserUsername())
+                        .password(appProperties.getUserPassword())
+                        .roles(Set.of(AccountRole.USER))
+                        .build();
+                accountService.saveAccount(user);
             }
         };
     }
