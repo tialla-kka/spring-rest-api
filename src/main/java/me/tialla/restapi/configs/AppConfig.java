@@ -28,7 +28,8 @@ public class AppConfig {
 
     @Bean
     public ApplicationRunner applicationRunner(){
-        // 테스트용 account 만들어 저장
+        // Application 테스트용 account 만들어 저장
+        // TestCode 실행시 accountService.saveAccount(tialla); 주석달고..^^~
         return new ApplicationRunner() {
 
             @Autowired
@@ -42,7 +43,7 @@ public class AppConfig {
                         .roles(Set.of(AccountRole.ADMIN, AccountRole.USER))
                         .build();
 
-                accountService.saveAccount(tialla);
+                //accountService.saveAccount(tialla);
             }
         };
     }
