@@ -51,13 +51,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         //web.ignoring().mvcMatchers("/**");
         web.ignoring().mvcMatchers("/docs/index.html"); //maven package 후 /docs/index.html있는지 확인 ~~;;
         web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
-
     }
 
     // 인터셉터로 요청을 안전하게 보호하는 방법을 설정하기 위한 오버라이딩
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         //super.configure(http); //모든 URL을 막음.
+                http
+                .anonymous()//익명사용자 허용
+                .and()
+                .formLogin()//form인증 사용 사용자 계정,email 인증 등등...추가할수 있다.
+                .and()
+                .authorizeRequests()//내가 허용할 메소드
+                    //.mvcMatchers(HttpMethod.GET, "/api/**").anonymous() //get요청으로 api로 오는 것을 anonymouse로 허용
+                    .mvcMatchers(HttpMethod.GET, "/api/**").authenticated()
+                    .anyRequest().authenticated() //나머지는 인증이 필요함.
+
+                ;
     }
 
     // 사용자 세부 서비스를 설정하기 위한 오버라이딩

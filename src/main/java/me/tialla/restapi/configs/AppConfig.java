@@ -1,10 +1,18 @@
 package me.tialla.restapi.configs;
 
+import me.tialla.restapi.accounts.Account;
+import me.tialla.restapi.accounts.AccountRole;
+import me.tialla.restapi.accounts.AccountService;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.Set;
 
 @Configuration
 public class AppConfig {
@@ -16,5 +24,26 @@ public class AppConfig {
     @Bean
     public PasswordEncoder passwordEncoder(){
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
+
+    @Bean
+    public ApplicationRunner applicationRunner(){
+        // 테스트용 account 만들어 저장
+        return new ApplicationRunner() {
+
+            @Autowired
+            AccountService accountService;
+
+            @Override
+            public void run(ApplicationArguments args) throws Exception {
+                Account tialla = Account.builder()
+                        .email("tialla@email.com")
+                        .password("tialla")
+                        .roles(Set.of(AccountRole.ADMIN, AccountRole.USER))
+                        .build();
+
+                accountService.saveAccount(tialla);
+            }
+        };
     }
 }
